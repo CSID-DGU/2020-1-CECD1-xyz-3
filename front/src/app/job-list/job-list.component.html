@@ -1,0 +1,108 @@
+<ng-container *ngIf="companyName">
+  <div class="navigation">
+    <section class="left">
+      <div class="company-name">{{ companyName }}</div>
+      <div class="menus">
+        <div
+          *ngFor="let menu of navigationMenus"
+          class="menu"
+          [class.disabled]="menu.disabled"
+          [routerLink]="menu.link ? '/' + fullCompanyName + menu.link : null"
+        >{{ menu.label }}</div>
+      </div>
+    </section>
+    <section class="right">
+      <div
+        *ngIf="userInfo.name"
+        class="user-name"
+      >{{ userInfo.name }}{{ 'HEELO_MESSAGE' | translate }}</div>
+      <div
+        *ngIf="!userInfo.name"
+        class="login-button"
+        (click)="onClickLoginButton()"
+      >{{ 'LOGIN' | translate }}</div>
+    </section>
+  </div>
+  <div class="splash">
+    <ng-container *ngIf="!positionId || !getPosition(positionId)">
+      <div class="title">{{ descriptiionTitle }}</div>
+      <div class="detail">{{ descriptiionDetail }}</div>
+    </ng-container>
+    <ng-container *ngIf="positionId && getPosition(positionId)">
+      <div class="title">{{ getPosition(positionId).name }}</div>
+      <div class="detail">{{ getPosition(positionId).summary }}</div>
+    </ng-container>
+  </div>
+  <ng-container *ngIf="!positionId">
+    <div class="list">
+      <div class="header">
+        <div class="category">{{ 'POSITION_CATEGORY' | translate }}</div>
+        <div class="position">{{ 'POSITION' | translate }}</div>
+        <div class="button"></div>
+      </div>
+      <div
+        *ngFor="let position of positions; let i = index"
+        class="job-description"
+        [class.odd]="i % 2 === 1"
+      >
+        <div class="category">{{ position.category }}</div>
+        <div class="position">{{ position.name }}</div>
+        <div class="button">
+          <div
+            class="more-button"
+            [routerLink]="'../position/' + position.id"
+          >{{ 'MORE' | translate }}</div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="positionId && getPosition(positionId)">
+    <div class="position-description">
+      <div
+        *ngFor="let description of getPosition(positionId).descriptions"
+        class="contents"
+      >
+        <div class="title">{{ description.title }}</div>
+        <div
+          *ngFor="let text of description.texts"
+          class="text"
+        >{{ text }}</div>
+      </div>
+      <div class="button-container">
+        <div
+          class="apply-button"
+          [class.disabled]="!userInfo.name"
+          (click)="!userInfo.name ? null : onClickApplyButton()"
+        >{{ 'APPLY' | translate }}</div>
+      </div>
+    </div>
+  </ng-container>
+  <div
+    *ngIf="applicantInfoModalVisible"
+    class="modal-container"
+  >
+    <div class="modal-card">
+      <span>{{ 'LOGIN_MODAL_MESSAGE_1' | translate }}{{ companyName }}{{ 'LOGIN_MODAL_MESSAGE_2' | translate }}</span>
+      <span>{{ 'LOGIN_MODAL_MESSAGE_3' | translate }}{{ companyName }}{{ 'LOGIN_MODAL_MESSAGE_4' | translate }}</span>
+      <div class="label">{{ 'NAME' | translate }}</div>
+      <input
+        type="text"
+        [(ngModel)]="inputUserName"
+      />
+      <div class="label">{{ 'EMAIL' | translate }}</div>
+      <input
+        type="text"
+        [(ngModel)]="inputEmailName"
+      />
+      <div
+        class="confirm button"
+        [class.disabled]="!inputUserName || !inputEmailName"
+        (click)="!inputUserName || !inputEmailName ? null : onClickConfirmButton()"
+      >{{ 'CONFIRM' | translate }}</div>
+      <div
+        class="button"
+        (click)="onClickCancelButton()"
+      >{{ 'SKIP_FOR_NOW' | translate }}</div>
+    </div>
+  </div>
+</ng-container>

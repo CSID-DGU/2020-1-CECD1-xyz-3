@@ -1,0 +1,9 @@
+build:
+  roots:
+    - ./protos/
+lint:
+  use:
+    - DEFAULT
+breaking:
+  use:
+    - FILE

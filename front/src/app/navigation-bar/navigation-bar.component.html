@@ -1,0 +1,14 @@
+<div class="inner-bar">
+  <section class="left">
+    <div class="company-name">doogeun</div>
+    <div class="menus">
+      <div
+        *ngFor="let menu of navigationMenus"
+        class="menu"
+      >{{ menu.label }}</div>
+    </div>
+  </section>
+  <section class="right">
+    <div class="user-name">{{ userName }}{{ 'HEELO_MESSAGE' | translate }}</div>
+  </section>
+</div>

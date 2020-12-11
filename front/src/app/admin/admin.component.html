@@ -1,0 +1,25 @@
+<div class="menus">
+  <section class="top">
+    <div
+      *ngFor="let menu of menus"
+      class="menu"
+      [class.active]="isActiveRouter(menu.link)"
+      [routerLink]="menu.link"
+    >{{ menu.label }}</div>
+  </section>
+  <section class="bottom">
+    <section class="left">
+      <div
+        class="text-button"
+        (click)="logout()"
+      >{{ 'LOGOUT' | translate }}</div>
+    </section>
+    <section class="right">
+      <i
+        class="fas fa-cog"
+        routerLink="preference"
+      ></i>
+    </section>
+  </section>
+</div>
+<router-outlet></router-outlet>

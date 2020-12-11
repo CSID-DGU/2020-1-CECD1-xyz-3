@@ -1,0 +1,165 @@
+:host {
+  width: 100%;
+  height: 100%;
+  max-width: calc(100% - 440px);
+  padding: 64px;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  &.space-between {
+    justify-content: space-between;
+  }
+}
+
+.buttons.row {
+  margin-bottom: 16px;
+}
+
+.table {
+  @mixin columns {
+    @for $i from 1 through 10 {
+      .col-#{$i} {
+        flex: $i 0 0;
+      }
+    }
+  }
+  @include columns();
+  border: 1px solid #ADB5BD;
+  text-align: center;
+  .header, > .row {
+    width: 100%;
+    height: 68px;
+  }
+  .header {
+    width: 100%;
+    height: 68px;
+    background-color: #CED4DA;
+    color: #495057;
+    font-size: 24px;
+  }
+  > .row {
+    border-bottom: 1px solid #ADB5BD;
+    color: #495057;
+    font-size: 24px;
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+i.fa-spin {
+  margin-right: 8px;
+}
+
+.button {
+  display: flex;
+  min-width: 100px;
+  height: 46px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  border: 1px solid #212529;
+  border-radius: 4px;
+  background-color: #F8F9FA;
+  color: #212529;
+  font-size: 24px;
+  user-select: none;
+  cursor: pointer;
+  &:hover {
+    background-color: #212529;
+    color: #F8F9FA;
+  }
+  &.solid {
+    background-color: #212529;
+    color: #F8F9FA;
+    &:hover {
+      background-color: #F8F9FA;
+      color: #212529;
+    }
+  }
+  &.delete {
+    border-color: #F03E3E;
+    background-color: #F03E3E;
+    color: #F8F9FA;
+    &:hover {
+      background-color: darken(#F03E3E, 5);
+    }
+    &:active {
+      background-color: darken(#F03E3E, 10);
+    }
+  }
+  &.disabled {
+    opacity: 0.5;
+    cursor: default;
+    &:hover {
+      background-color: #F8F9FA;
+      color: #212529;
+    }
+  }
+}
+
+.checkbox {
+  display: flex;
+  width: 24px;
+  height: 24px;
+  margin: 0 auto;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #495057;
+  color: #495057;
+  cursor: pointer;
+  i {
+    font-size: 18px;
+  }
+}
+
+.edit.button {
+  margin: 0 60px;
+}
+
+.summary {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.input-label {
+  margin-bottom: 4px;
+  color: #212529;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.add-row.button {
+  width: 120px;
+}
+
+.add-paragraph.button {
+  width: 160px;
+  margin-top: 8px;
+}
+
+input, textarea {
+  display: block;
+  width: 100%;
+  border: 1px solid #495057;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  font-size: 18px;
+  &:focus {
+    outline: none;
+  }
+}
+
+input {
+  height: 40px;
+}
+
+textarea {
+  height: 300px;
+  resize: none;
+}

@@ -1,0 +1,112 @@
+<ng-container *ngIf="activePageMode === PageMode.VIEW">
+  <div class="space-between buttons row">
+    <div
+      class="delete button"
+      (click)="onDeleteButtonClick()"
+    >{{ 'REMOVE' | translate }}</div>
+    <div
+      class="button"
+      (click)="onCreatePositionClick()"
+    >{{ 'CREATE_NEW_POSITION' | translate }}</div>
+  </div>
+  
+  <div class="table">
+    <div class="header row">
+      <div class="col-1"></div>
+      <div class="col-2">{{ 'POSITION_CATEGORY' | translate }}</div>
+      <div class="col-4">{{ 'POSITION' | translate }}</div>
+      <div class="col-4">{{ 'DESCRIPTION' | translate }}</div>
+      <div class="col-3"></div>
+    </div>
+    <div
+      *ngIf="positions.length === 0"
+      class="row"
+    >
+      <div
+        *ngIf="!isFetching"
+        class="col-1"
+      >{{ 'EMPTY_POSITION' | translate }}</div>
+      <div
+        *ngIf="isFetching"
+        class="col-1"
+      >
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <span>{{ 'LOADING_DATA' | translate }}</span>
+      </div>
+    </div>
+    <div
+      *ngFor="let position of positions"
+      class="row"
+    >
+      <div class="col-1">
+        <div
+          class="checkbox"
+          (click)="onCheckboxClick(position)"
+        >
+          <i
+            *ngIf="isSelected(position)"
+            class="fas fa-check"
+          ></i>
+        </div>
+      </div>
+      <div class="col-2">{{ position.category }}</div>
+      <div class="col-4">{{ position.name }}</div>
+      <div class="col-4 summary">{{ position.summary }}</div>
+      <div class="col-3">
+        <div
+          class="solid edit button"
+          (click)="onViewDetailClick(position)"
+        >{{ 'DETAILS' | translate }}</div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="activePageMode === PageMode.EDIT || activePageMode === PageMode.CREATE">
+  <div class="space-between buttons row">
+    <div
+      class="button"
+      (click)="onCancelClick()"
+    >{{ (activePageMode === PageMode.EDIT ? 'BACK' : 'CANCEL_TO_CREATE') | translate }}</div>
+    <div
+      class="button"
+      (click)="activePageMode === PageMode.EDIT ? onSaveClick() : onCreateClick()"
+    >{{ (activePageMode === PageMode.EDIT ? 'SAVE' : 'CREATE') | translate }}</div>
+  </div>
+  <div class="input-label">{{ 'POSITION_CATEGORY' | translate }}</div>
+  <input
+    type="text"
+    [(ngModel)]="editingPoisition.category"
+  >
+  <div class="input-label">{{ 'POSITION_NAME' | translate }}</div>
+  <input
+    type="text"
+    [(ngModel)]="editingPoisition.name"
+  >
+  <div class="input-label">{{ 'POSITION_SUMMARY' | translate }}</div>
+  <textarea [(ngModel)]="editingPoisition.summary"></textarea>
+  <div class="input-label">{{ 'POSITION_DETAILED_DESCRIPTION' | translate }}</div>
+  <ng-container *ngFor="let paragraph of editingPoisition.descriptions; let i = index">
+    <div class="input-sub-label">{{ 'PARAGRAPH' | translate }}{{ i + 1 }} {{ 'TITLE' | translate }}</div>
+    <input
+      type="text"
+      [(ngModel)]="paragraph.title"
+    >
+    <div class="input-sub-label">{{ 'PARAGRAPH' | translate }} {{ 'CONTENT' | translate}}</div>
+    <ng-container *ngFor="let text of paragraph.texts; let textIndex = index">
+      <input
+        type="text"
+        [(ngModel)]="paragraph.texts[textIndex]"
+      >
+      <div
+        *ngIf="textIndex === paragraph.texts.length - 1"
+        class="add-row button"
+        (click)="paragraph.texts.push('')"
+      >{{ 'ADD_ROW' | translate }}</div>
+    </ng-container>
+    <div
+      *ngIf="i === editingPoisition.descriptions.length - 1"
+      class="add-paragraph button"
+      (click)="editingPoisition.descriptions.push({ title: '', texts: [ '' ]})"
+    >{{ 'ADD_PARAGRAPH' | translate }}</div>
+  </ng-container>
+</ng-container>

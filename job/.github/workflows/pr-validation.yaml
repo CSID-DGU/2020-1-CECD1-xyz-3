@@ -1,0 +1,40 @@
+name: Pull request validation
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  validate:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Taskfile
+        uses: Arduino/actions/setup-taskfile@master
+        with:
+          version: '2.8.1'
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.15'
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.5'
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements-dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install dependencies
+        run: task deps
+      - name: Lint
+        run: task lint
+      - name: Test
+        run: task test
+      - name: Build
+        run: task build

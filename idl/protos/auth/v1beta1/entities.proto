@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package auth.v1beta1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/doogeun/idl/gen/go/auth/v1beta1;v1beta1";
+
+message Company {
+  string id = 1;
+  string name = 2;
+  google.protobuf.Timestamp create_time = 3;
+}
+
+message User {
+  string id = 1;
+  string email = 2;
+  string name = 3;
+  google.protobuf.Timestamp create_time = 4;
+  GoogleID google_id = 5;
+}
+
+message GoogleID {
+  string sub = 1;
+}

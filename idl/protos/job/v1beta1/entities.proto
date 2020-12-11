@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package job.v1beta1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/doogeun/idl/gen/go/job/v1beta1;v1beta1";
+
+message CompanySummary {
+  string id = 1;
+  string name = 2;
+}
+
+message JobSummary {
+  string id = 1;
+  string name = 2;
+  CompanySummary company = 3;
+}
+
+message Job {
+  string id = 1;
+  string name = 2;
+  CompanySummary company = 3;
+  google.protobuf.Timestamp create_time = 4;
+  google.protobuf.Timestamp open_time = 5;
+  optional google.protobuf.Timestamp close_time = 6;
+  JobDescription description = 7;
+}
+
+message JobDescription {
+  string location = 1;
+  string description = 2;
+}

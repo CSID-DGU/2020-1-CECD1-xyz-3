@@ -1,0 +1,10 @@
+linters:
+  disable-all: true
+  enable:
+    - gocritic
+    - goimports
+    - golint
+    - govet
+linters-settings:
+  goimports:
+    local-prefixes: github.com/doogeun

@@ -1,0 +1,27 @@
+name: Pull request validation
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  validate:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v1
+        with:
+          ref: main
+      - run: git switch main
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install Taskfile
+        uses: Arduino/actions/setup-taskfile@master
+        with:
+          version: '2.8.1'
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.8.5'
+      - name: Install pre-commit
+        run: pip install pre-commit==2.6.0
+      - name: Lint
+        run: task lint

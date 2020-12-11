@@ -1,0 +1,430 @@
+<div class="contents">
+  <div class="tab-row">
+    <div
+      *ngFor="let tab of tabs"
+      class="tab"
+      [class.inactive]="tab.category !== activeTab"
+      (click)="activeTab = tab.category"
+    >
+      <div class="label">{{ tab.label }}</div>
+      <div
+        class="count"
+        [ngClass]="tab.category !== activeTab ? 'blue' : 'red'"
+      >{{ getNumberOfApplicant(tab.category) }}</div>
+    </div>
+  </div>
+  <div class="inner-contents">
+    <ng-container *ngIf="ProcessTab.EXAMINATION === activeTab">
+      <div class="row">
+        <div class="disabled button">{{ 'REGISTER_REFERRAL' | translate }}</div>
+        <div class="disabled button">{{ 'REGISTER_APPLICANT' | translate }}</div>
+      </div>
+      <div class="space-between title row">
+        <div class="row">
+          <div><span class="bold">{{ 'MORE_THAN_FIVE_DAYS' | translate}}</span> {{ 'WAITING_APPLICANTS' | translate }}</div>
+          <div class="red count">{{ moreWaitedExaminationApplicants.length }}</div>
+        </div>
+        <div class="row">
+          <div
+            class="button"
+            (click)="onMoreWaitedExaminationApplicantPassButton()"
+          >{{ 'PASS' | translate }}</div>
+          <div
+            class="button"
+            (click)="onMoreWaitedExaminationApplicantFailButton()"
+          >{{ 'FAILURE' | translate }}</div>
+        </div>
+      </div>
+      <div class="table">
+        <div class="header row">
+          <div class="col-1"></div>
+          <div class="col-2">{{ 'NAME' | translate }}</div>
+          <div class="col-5">{{ 'POSITION_NAME' | translate }}</div>
+          <div class="col-3">{{ 'APPLY_DATE' | translate }}</div>
+          <div class="col-3"></div>
+        </div>
+        <div
+          *ngIf="moreWaitedExaminationApplicants.length === 0"
+          class="row"
+        >
+          <div
+            *ngIf="!isFetching"
+            class="col-1"
+          >{{ 'NO_APPLICANT' | translate }}</div>
+          <div
+            *ngIf="isFetching"
+            class="col-1"
+          >
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>{{ 'LOADING_DATA' | translate }}</span>
+          </div>
+        </div>
+        <div
+          *ngFor="let applicant of moreWaitedExaminationApplicants"
+          class="row"
+        >
+          <div class="col-1">
+            <div
+              class="checkbox"
+              (click)="onClickMoreWaitedExaminationApplicant(applicant)"
+            >
+              <i
+                *ngIf="isSelectedMoreWaitedExaminationApplicant(applicant)"
+                class="fas fa-check"
+              ></i>
+            </div>
+          </div>
+          <div class="col-2">{{ applicant.name }}</div>
+          <div class="col-5">{{ applicant.position }}</div>
+          <div class="col-3">{{ beautifyDate(applicant.applyDate) }}</div>
+          <div class="col-3">
+            <div class="solid examine button">{{ 'REVIEW_DOCUMENT' | translate }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="space-between title row">
+        <div class="row">
+          <div>{{ 'WAITING_FOR_EXAMINATING_APPLICANT' | translate }}</div>
+          <div class="blue count">{{ otherExaminationApplicants.length }}</div>
+        </div>
+        <div class="row">
+          <div
+            class="button"
+            (click)="onOtherExaminationApplicantPassButton()"
+          >{{ 'PASS' | translate }}</div>
+          <div
+            class="button"
+            (click)="onOtherExaminationApplicantFailButton()"
+          >{{ 'FAILURE' | translate }}</div>
+        </div>
+      </div>
+      <div class="table">
+        <div class="header row">
+          <div class="col-1"></div>
+          <div class="col-2">{{ 'NAME' | translate }}</div>
+          <div class="col-5">{{ 'POSITION_NAME' | translate }}</div>
+          <div class="col-3">{{ 'APPLY_DATE' | translate }}</div>
+          <div class="col-3"></div>
+        </div>
+        <div
+          *ngIf="otherExaminationApplicants.length === 0"
+          class="row"
+        >
+          <div
+            *ngIf="!isFetching"
+            class="col-1"
+          >{{ 'NO_APPLICANT' | translate }}</div>
+          <div
+            *ngIf="isFetching"
+            class="col-1"
+          >
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>{{ 'LOADING_DATA' | translate }}</span>
+          </div>
+        </div>
+        <div
+          *ngFor="let applicant of otherExaminationApplicants"
+          class="row"
+        >
+          <div class="col-1">
+            <div
+              class="checkbox"
+              (click)="onClickOtherExaminationApplicant(applicant)"
+            >
+              <i
+                *ngIf="isSelectedOtherExaminationApplicant(applicant)"
+                class="fas fa-check"
+              ></i>
+            </div>
+          </div>
+          <div class="col-2">{{ applicant.name }}</div>
+          <div class="col-5">{{ applicant.position }}</div>
+          <div class="col-3">{{ beautifyDate(applicant.applyDate) }}</div>
+          <div class="col-3">
+            <div class="solid examine button">{{ 'REVIEW_DOCUMENT' | translate }}</div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="ProcessTab.PROGRESS === activeTab">
+      <div class="space-between title row">
+        <div class="row">
+          <div>{{ 'NEED_TO_CHANGE_SCREENING_STEP_APPLICANT' | translate }}</div>
+          <div class="blue count">{{ progressCompletedApplicants.length }}</div>
+        </div>
+        <div class="row">
+          <div
+            class="button"
+            (click)="onProgressApplicantPassButton()"
+          >{{ 'PASS' | translate }}</div>
+          <div
+            class="button"
+            (click)="onProgressApplicantFailButton()"
+          >{{ 'FAILURE' | translate }}</div>
+        </div>
+      </div>
+      <div class="table">
+        <div class="header row">
+          <div class="col-1"></div>
+          <div class="col-2">{{ 'NAME' | translate }}</div>
+          <div class="col-5">{{ 'POSITION_NAME' | translate }}</div>
+          <div class="col-3">{{ 'SCREENING_STEP' | translate }}</div>
+          <div class="col-3">{{ 'APPLY_DATE' | translate }}</div>
+          <div class="col-3"></div>
+        </div>
+        <div
+          *ngIf="progressCompletedApplicants.length === 0"
+          class="row"
+        >
+          <div
+            *ngIf="!isFetching"
+            class="col-1"
+          >{{ 'NO_APPLICANT' | translate }}</div>
+          <div
+            *ngIf="isFetching"
+            class="col-1"
+          >
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>{{ 'LOADING_DATA' | translate }}</span>
+          </div>
+        </div>
+        <div
+          *ngFor="let applicant of progressCompletedApplicants"
+          class="row"
+        >
+          <div class="col-1">
+            <div
+              class="checkbox"
+              (click)="onClickProgressApplicant(applicant)"
+            >
+              <i
+                *ngIf="isSelectedProgressApplicant(applicant)"
+                class="fas fa-check"
+              ></i>
+            </div>
+          </div>
+          <div class="col-2">{{ applicant.name }}</div>
+          <div class="col-5">{{ applicant.position }}</div>
+          <div class="col-3">{{ applicant.progressDetail && applicant.progressDetail.label }}</div>
+          <div class="col-3">{{ beautifyDate(applicant.applyDate) }}</div>
+          <div class="col-3">
+            <div class="solid examine button">{{ 'CHECK_DOCUMENT' | translate }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="space-between title row">
+        <div class="row">          
+          <div>{{ 'ON_SCREENING_APPLICANT' | translate }}</div>
+          <div class="blue count">{{ onProgressApplicants.length }}</div>
+        </div>
+        <div class="row">
+          <div
+            class="button"
+            (click)="onClickIncompletedProgressApplicantPassButton()"
+          >{{ 'PASS' | translate }}</div>
+          <div
+            class="button"
+            (click)="onClickIncompletedProgressApplicantFailButton()"
+          >{{ 'FAILURE' | translate }}</div>
+        </div>
+      </div>
+      <div class="table">
+        <div class="header row">
+          <div class="col-1"></div>
+          <div class="col-2">{{ 'NAME' | translate }}</div>
+          <div class="col-5">{{ 'POSITION_NAME' | translate }}</div>
+          <div class="col-3">{{ 'SCREENING_STEP' | translate }}</div>
+          <div class="col-3">{{ 'APPLY_DATE' | translate }}</div>
+          <div class="col-3"></div>
+        </div>
+        <div
+          *ngIf="onProgressApplicants.length === 0"
+          class="row"
+        >
+          <div
+            *ngIf="!isFetching"
+            class="col-1"
+          >{{ 'NO_APPLICANT' | translate }}</div>
+          <div
+            *ngIf="isFetching"
+            class="col-1"
+          >
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>{{ 'LOADING_DATA' | translate }}</span>
+          </div>
+        </div>
+        <div
+          *ngFor="let applicant of onProgressApplicants"
+          class="row"
+        >
+          <div class="col-1">
+            <div
+              class="checkbox"
+              (click)="onClickIncompletedProgressApplicant(applicant)"
+            >
+              <i
+                *ngIf="isSelectedIncompletedProgressApplicant(applicant)"
+                class="fas fa-check"
+              ></i>
+            </div>
+          </div>
+          <div class="col-2">{{ applicant.name }}</div>
+          <div class="col-5">{{ applicant.position }}</div>
+          <div class="col-3">{{ applicant.progressDetail && applicant.progressDetail.label }}</div>
+          <div class="col-3">{{ beautifyDate(applicant.applyDate) }}</div>
+          <div class="col-3">
+            <div class="solid examine button">{{ 'CHECK_DOCUMENT' | translate }}</div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="ProcessTab.END === activeTab">
+      <div class="title row">
+        <div>{{ 'PASSED_APPLICANT' | translate }}</div>
+        <div class="blue count">{{ passedApplicants.length }}</div>
+      </div>
+      <div class="table">
+        <div class="header row">
+          <div class="col-2">{{ 'NAME' | translate }}</div>
+          <div class="col-5">{{ 'POSITION_NAME' | translate }}</div>
+          <div class="col-3">{{ 'APPLY_DATE' | translate }}</div>
+          <div class="col-3"></div>
+        </div>
+        <div
+          *ngIf="passedApplicants.length === 0"
+          class="row"
+        >
+          <div
+            *ngIf="!isFetching"
+            class="col-1"
+          >{{ 'NO_APPLICANT' | translate }}</div>
+          <div
+            *ngIf="isFetching"
+            class="col-1"
+          >
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>{{ 'LOADING_DATA' | translate }}</span>
+          </div>
+        </div>
+        <div
+          *ngFor="let applicant of passedApplicants"
+          class="row"
+        >
+          <div class="col-2">{{ applicant.name }}</div>
+          <div class="col-5">{{ applicant.position }}</div>
+          <div class="col-3">{{ beautifyDate(applicant.applyDate) }}</div>
+          <div class="col-3">
+            <div class="solid examine button">{{ 'CHECK_DOCUMENT' | translate }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="space-between title row">
+        <div class="row">
+          <div>{{ 'FAILED_APPLICANT' | translate }}</div>
+          <div class="blue count">{{ failedApplicants.length }}</div>
+        </div>
+        <div class="row"></div>
+      </div>
+      <div class="table">
+        <div class="header row">
+          <div class="col-2">{{ 'NAME' | translate }}</div>
+          <div class="col-5">{{ 'POSITION_NAME' | translate }}</div>
+          <div class="col-3">{{ 'APPLY_DATE' | translate }}</div>
+          <div class="col-3"></div>
+        </div>
+        <div
+          *ngIf="failedApplicants.length === 0"
+          class="row"
+        >
+          <div
+            *ngIf="!isFetching"
+            class="col-1"
+          >{{ 'NO_APPLICANT' | translate }}</div>
+          <div
+            *ngIf="isFetching"
+            class="col-1"
+          >
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>{{ 'LOADING_DATA' | translate }}</span>
+          </div>
+        </div>
+        <div
+          *ngFor="let applicant of failedApplicants"
+          class="row"
+        >
+          <div class="col-2">{{ applicant.name }}</div>
+          <div class="col-5">{{ applicant.position }}</div>
+          <div class="col-3">{{ beautifyDate(applicant.applyDate) }}</div>
+          <div class="col-3">
+            <div class="solid examine button">{{ 'CHECK_DOCUMENT' | translate }}</div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="ProcessTab.ONBOARD === activeTab">
+      <div class="space-between title row">
+        <div class="row">
+          <div>{{ 'ONBOARDING_APPLICANT' | translate }}</div>
+          <div class="blue count">{{ onboardingApplicants.length }}</div>
+        </div>
+        <div class="row">
+          <div
+            class="button"
+            (click)="onboardingApplicantPassButton()"
+          >{{ 'PASS' | translate }}</div>
+          <div
+            class="button"
+            (click)="onboardingApplicantFailButton()"
+          >{{ 'FAILURE' | translate }}</div>
+        </div>
+      </div>
+      <div class="table">
+        <div class="header row">
+          <div class="col-1"></div>
+          <div class="col-2">{{ 'NAME' | translate }}</div>
+          <div class="col-5">{{ 'POSITION_NAME' | translate }}</div>
+          <div class="col-3">{{ 'APPLY_DATE' | translate }}</div>
+          <div class="col-3"></div>
+        </div>
+        <div
+          *ngIf="onboardingApplicants.length === 0"
+          class="row"
+        >
+          <div
+            *ngIf="!isFetching"
+            class="col-1"
+          >{{ 'NO_APPLICANT' | translate }}</div>
+          <div
+            *ngIf="isFetching"
+            class="col-1"
+          >
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>{{ 'LOADING_DATA' | translate }}</span>
+          </div>
+        </div>
+        <div
+          *ngFor="let applicant of onboardingApplicants"
+          class="row"
+        >
+          <div class="col-1">
+            <div
+              class="checkbox"
+              (click)="onClickOnboardApplicant(applicant)"
+            >
+              <i
+                *ngIf="isSelectedOnboardingApplicant(applicant)"
+                class="fas fa-check"
+              ></i>
+            </div>
+          </div>
+          <div class="col-2">{{ applicant.name }}</div>
+          <div class="col-5">{{ applicant.position }}</div>
+          <div class="col-3">{{ beautifyDate(applicant.applyDate) }}</div>
+          <div class="col-3">
+            <div class="solid examine button">{{ 'CHECK_DOCUMENT' | translate }}</div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

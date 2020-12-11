@@ -1,0 +1,23 @@
+name: Generate code
+on:
+  push:
+    branches:
+      - main
+jobs:
+  validate:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Taskfile
+        uses: Arduino/actions/setup-taskfile@master
+        with:
+          version: '2.8.1'
+      - name: Generate Code
+        run: task gen
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "codegen: ${{ github.event.head_commit.message }}"
+          branch: main
+          commit_user_name: doogeun bot
+          commit_user_email: no-reply@doogeun.co
+          commit_author: doogeun bot <no-reply@doogeun.co>

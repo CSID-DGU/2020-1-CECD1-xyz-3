@@ -1,0 +1,36 @@
+version: "2"
+
+tasks:
+  build:
+    cmds:
+      - go build -o ./out/auth ./cmd/main.go
+
+  image:
+    cmds:
+      - |
+        cd {{.GITCONFIG_DIR}} && \
+        git init && \
+        git config --local url.https://${GITHUB_TOKEN}@github.com.insteadOf https://github.com
+      - docker build . --secret id=gitconfig,src={{.GITCONFIG_DIR}}/.git/config -t ${DOCKER_TAG}
+      - rm -r {{.GITCONFIG_DIR}}
+    env:
+      DOCKER_BUILDKIT: 1
+    vars:
+      GITCONFIG_DIR:
+        sh: mktemp -d
+
+  deps:
+    cmds:
+      - pip install -r requirements-dev.txt
+      - go mod download
+    env:
+      GOPRIVATE: "github.com/doogeun"
+      GONOSUMDB: "github.com/doogeun"
+
+  lint:
+    cmds:
+      - pre-commit run --all-files
+
+  test:
+    cmds:
+      - go test -count=1 ./...

@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package auth.v1beta1;
+
+import "auth/v1beta1/entities.proto";
+
+option go_package = "github.com/doogeun/idl/gen/go/auth/v1beta1;v1beta1";
+
+service APIService {
+  rpc GetCompany(GetCompanyRequest) returns (GetCompanyResponse);
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+}
+
+message GetCompanyRequest {
+  string id = 1;
+}
+
+message GetCompanyResponse {
+  Company company = 1;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
