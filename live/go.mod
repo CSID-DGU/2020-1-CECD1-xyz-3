@@ -8,5 +8,5 @@ require (
 	github.com/gofiber/fiber/v2 v2.2.3
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/klauspost/compress v1.11.3 // indirect
-	golang.org/x/sys v0.0.0-20201204225414-ed752295db88 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 )
